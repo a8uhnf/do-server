@@ -1,0 +1,23 @@
+{
+  "name": "do-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/HadockHanif/do-server.git"
+  },
+  "author": "abu hanifa",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/HadockHanif/do-server/issues"
+  },
+  "homepage": "https://github.com/HadockHanif/do-server",
+  "devDependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  }
+}
