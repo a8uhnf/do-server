@@ -2,6 +2,7 @@ var express = require('express');
 var app = express();
 var morgan = require('morgan');
 const bodyParser = require('body-parser');
+var User = require('./db/User');
 var application_root = __dirname,
     path = require("path"),
     mongoose = require('mongoose');
@@ -25,19 +26,14 @@ db.on('error', function () {
 db.once('open', function () {
   console.log('Db connected...');
 });
-var User = mongoose.model('User', new mongoose.Schema({
-  name: 'String',
-  email: 'String',
-  username: 'String',
-  password: 'String'
-}));
 app.use(express.static(path.join(application_root, "public")));
 app.post('/login', function (req, resp, next) {
   console.log('hello login');
   resp.send('okay');
 });
 app.post('/register', function (req, resp, next) {
-  console.log('hello /register', req.body);
+  var testUser = new User();
+  console.log('hello /register', req.body.name);
   resp.send('okay');
 });
 app.get('/hello', function (request, response, next) {
