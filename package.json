@@ -18,6 +18,9 @@
   "homepage": "https://github.com/HadockHanif/do-server",
   "devDependencies": {
     "body-parser": "^1.15.2",
-    "express": "^4.14.0"
+    "express": "^4.14.0",
+    "mongo": "^0.1.0",
+    "mongoose": "^4.5.9",
+    "morgan": "^1.7.0"
   }
 }

@@ -1,9 +1,11 @@
 var express = require('express');
 var app = express();
+var morgan = require('morgan');
 const bodyParser = require('body-parser');
 var application_root = __dirname,
     path = require("path"),
     mongoose = require('mongoose');
+app.use(morgan('combined'));
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -15,25 +17,30 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 
-mongoose.connect('mongodb://localhost/my_database');
-var Todo = mongoose.model('Todo', new mongoose.Schema({
-  text: String,
-  done: Boolean,
-  order: Number
+mongoose.connect('mongodb://localhost/do_db');
+var db = mongoose.connection;
+db.on('error', function () {
+  console.log('connection error');
+});
+db.once('open', function () {
+  console.log('Db connected...');
+});
+var User = mongoose.model('User', new mongoose.Schema({
+  name: 'String',
+  email: 'String',
+  username: 'String',
+  password: 'String'
 }));
 app.use(express.static(path.join(application_root, "public")));
-
-/*app.configure(function(){
- app.use(express.bodyParser());
- app.use(express.methodOverride());
- app.use(app.router);
-
- app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
- //app.set('views', path.join(application_root, "views"));
- //app.set('view engine', 'jade')
- });*/
+app.post('/login', function (req, resp, next) {
+  console.log('hello login');
+  resp.send('okay');
+});
+app.post('/register', function (req, resp, next) {
+  console.log('hello /register', req.body);
+  resp.send('okay');
+});
 app.get('/hello', function (request, response, next) {
-  console.log('hello world');
   // response.send("I'm hanifa");
   var todo;
   todo = new Todo({
