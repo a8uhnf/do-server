@@ -33,27 +33,13 @@ app.post('/login', function (req, resp, next) {
 });
 app.post('/register', function (req, resp, next) {
   var testUser = new User();
+  if (User.find({username: req.body.username})) {
+    console.log('User already exist', User.findOne({username: req.body.username}));
+  } else {
+    console.log('Unique user');
+  }
   console.log('hello /register', req.body.name);
   resp.send('okay');
-});
-app.get('/hello', function (request, response, next) {
-  // response.send("I'm hanifa");
-  var todo;
-  todo = new Todo({
-    text: 'hanifa',
-    done: 'everything',
-    order: 'pizza'
-  });
-  todo.save(function(err) {
-    if (!err) {
-      return console.log("created");
-    }
-  });
-  return response.send(todo);
-});
-app.post('/hello', function (request, response) {
-  console.log('hello world', request.body);
-  response.send("I'm hanifa");
 });
 app.get('/users', function (request, response, next) {
 
