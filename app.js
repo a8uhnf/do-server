@@ -17,8 +17,6 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 app.use(bodyParser.json());
-
-
 mongoose.connect('mongodb://localhost/do_db');
 var db = mongoose.connection;
 db.on('error', function () {
@@ -40,26 +38,37 @@ app.post('/register', function (req, resp, next) {
   });
 
   testUser.save(function (err) {
-    if (err) throw err;
+    if (err) {
+      console.log('error occurs');
+      resp.send('error 1');
+    }
 
 // fetch user and test password verification
     User.findOne({username: req.body.username}, function (err, user) {
-      if (err) throw err;
+      if (err) {
+        console.log('error occurs');
+        resp.send('error 2');
+      }
 
       // test a matching password
-      user.comparePassword('Password123', function (err, isMatch) {
-        if (err) throw err;
+      user.compareUsername('Password123', function (err, isMatch) {
+        if (err) {
+          console.log('error occurs');
+          resp.send('error 3');
+        }
         console.log('Password123:', isMatch); // -&gt; Password123: true
       });
 
       // test a failing password
-      user.comparePassword('123Password', function (err, isMatch) {
-        if (err) throw err;
+      user.compareUsername('123Password', function (err, isMatch) {
+        if (err) {
+          console.log('error occurs');
+          resp.send('error 4');
+        }
         console.log('123Password:', isMatch); // -&gt; 123Password: false
       });
     });
   });
-
 });
 app.get('/users', function (request, response, next) {
   User.find({}, function(err, users) {

@@ -38,5 +38,18 @@ UserSchema.methods.comparePassword = function(candidatePassword, cb) {
     cb(null, isMatch);
   });
 };
+UserSchema.methods.compareUsername = function (cadidateUsername, cb) {
+  console.log('hello candidate master', cadidateUsername);
+  var user = this;
+  user.find({}, function(err, users) {
+    var userMap = {};
+
+    users.forEach(function(user) {
+      console.log(user);
+    });
+
+    response.send(userMap);
+  });
+};
 
 module.exports = mongoose.model('User', UserSchema);
