@@ -33,16 +33,43 @@ app.post('/login', function (req, resp, next) {
   resp.send('okay');
 });
 app.post('/register', function (req, resp, next) {
-  var testUser = new User();
-  if (User.find({username: req.body.username})) {
-    console.log('User already exist', User.findOne({username: req.body.username}));
-  } else {
-    console.log('Unique user');
-  }
-  console.log('hello /register', req.body.name);
-  resp.send('okay');
+  // create a user a new user
+  var testUser = new User({
+    username: req.body.username,
+    password: req.body.password
+  });
+
+  testUser.save(function (err) {
+    if (err) throw err;
+
+// fetch user and test password verification
+    User.findOne({username: req.body.username}, function (err, user) {
+      if (err) throw err;
+
+      // test a matching password
+      user.comparePassword('Password123', function (err, isMatch) {
+        if (err) throw err;
+        console.log('Password123:', isMatch); // -&gt; Password123: true
+      });
+
+      // test a failing password
+      user.comparePassword('123Password', function (err, isMatch) {
+        if (err) throw err;
+        console.log('123Password:', isMatch); // -&gt; 123Password: false
+      });
+    });
+  });
+
 });
 app.get('/users', function (request, response, next) {
+  User.find({}, function(err, users) {
+    var userMap = {};
 
+    users.forEach(function(user) {
+      userMap[user._id] = user;
+    });
+
+    response.send(userMap);
+  });
 });
 app.listen(3000);
