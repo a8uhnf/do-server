@@ -31,16 +31,17 @@ app.post('/login', function (req, resp, next) {
   resp.send('okay');
 });
 app.post('/register', function (req, resp, next) {
-  console.log('hello world');
   // create a user a new user
   var testUser = new User({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    realname: req.body.realname,
+    email: req.body.email,
   });
 
   testUser.save(function (err) {
     if (err) {
-      console.log('error occurs');
+      throw err;
       resp.send('error 1');
     }
 
@@ -48,27 +49,10 @@ app.post('/register', function (req, resp, next) {
     User.find({username: req.body.username}, function (err, user) {
       console.log('hello check user', user);
       if (err) {
+        throw err;
         console.log('error occurs');
         resp.send('error 2');
       }
-
-      // test a matching password
-      /*user.compareUsername(req.body.username, function (err, isMatch) {
-        if (err) {
-          console.log('error occurs');
-          resp.send('error 3');
-        }
-        console.log('Password123:', isMatch); // -&gt; Password123: true
-      });*/
-
-      // test a failing password
-      /*user.compareUsername('123Password', function (err, isMatch) {
-        if (err) {
-          console.log('error occurs');
-          resp.send('error 4');
-        }
-        console.log('123Password:', isMatch); // -&gt; 123Password: false
-      });*/
     });
   });
 });
