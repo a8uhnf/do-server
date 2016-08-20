@@ -27,35 +27,47 @@ db.once('open', function () {
 });
 app.use(express.static(path.join(application_root, "public")));
 app.post('/login', function (req, resp, next) {
-  console.log('hello login');
   resp.send('okay');
 });
 app.post('/register', function (req, resp, next) {
-  // create a user a new user
-  var testUser = new User({
-    username: req.body.username,
-    password: req.body.password,
-    realname: req.body.realname,
-    email: req.body.email,
-  });
-
-  testUser.save(function (err) {
+  User.find({}, function (err, users) {
     if (err) {
       throw err;
-      resp.send('error 1');
     }
-
-// fetch user and test password verification
-    User.find({username: req.body.username}, function (err, user) {
-      console.log('hello check user', user);
-      if (err) {
-        throw err;
-        console.log('error occurs');
-        resp.send('error 2');
-      }
-    });
+    console.log('users', users);
+  })
+      .where('real');
+  User.find({ username: req.body.username }, function (err, user) {
+    console.log('hello check user', user);
+    if (err) {
+      resp.json({code: 1, status: 'error1', err: err});
+      next();
+    }
+    console.log(user.length,'goooooooooo');
+    if (Number(user.length) !== 0) {
+      resp.send({status: {
+        code: 0,
+        message: 'username already exist'
+      }});
+      next();
+    } else {
+      var newUser = new User({
+        username: req.body.username,
+        password: req.body.password,
+        email: req.body.email,
+        realname: req.body.name
+      });
+      newUser.save(function (err) {
+        if (err) {
+          // throw err;
+          resp.json({code: 1, status: 'error1', err: err});
+        }
+      });
+    }
   });
 });
+
+// Get all user list
 app.get('/users', function (request, response, next) {
   User.find({}, function(err, users) {
     var userMap = {};
