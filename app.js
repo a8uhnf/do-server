@@ -30,25 +30,31 @@ app.post('/login', function (req, resp, next) {
   resp.send('okay');
 });
 app.post('/register', function (req, resp, next) {
-  User.find({}, function (err, users) {
+  User.find({}, function (err, user) {
     if (err) {
       throw err;
     }
-    console.log('users', users);
+    console.log('hello world', user);
+    if (Number(user.length) > 0) {
+      resp.send('email and username already exist');
+      next();
+      resp.end('okay');
+    }
   })
-      .where('real');
+      // .where('email').equals(req.body.email)
+      .where('username').equals(req.body.username);
+
   User.find({ username: req.body.username }, function (err, user) {
-    console.log('hello check user', user);
     if (err) {
       resp.json({code: 1, status: 'error1', err: err});
       next();
     }
-    console.log(user.length,'goooooooooo');
     if (Number(user.length) !== 0) {
       resp.send({status: {
         code: 0,
         message: 'username already exist'
       }});
+      resp.end();
       next();
     } else {
       var newUser = new User({
@@ -61,6 +67,7 @@ app.post('/register', function (req, resp, next) {
         if (err) {
           // throw err;
           resp.json({code: 1, status: 'error1', err: err});
+          next();
         }
       });
     }
