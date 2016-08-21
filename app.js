@@ -6,6 +6,7 @@ var User = require('./db/User');
 var application_root = __dirname,
     path = require("path"),
     mongoose = require('mongoose');
+
 app.use(morgan('combined'));
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -29,8 +30,82 @@ app.use(express.static(path.join(application_root, "public")));
 app.post('/login', function (req, resp, next) {
   resp.send('okay');
 });
-app.post('/register', function (req, resp, next) {
-  User.find({}, function (err, user) {
+
+function checkUsername(username) {
+  console.log('hello world check username');
+  return new Promise(function (resolve, reject) {
+    User.find({ username: username }, function (err, user) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(user);
+      }
+    });
+  });
+}
+
+function checkEmail(email) {
+  console.log('hello world check email');
+  return new Promise(function (resolve, reject) {
+    User.find({ email: email}, function (err, user) {
+      if (err) {
+        reject(err);
+      } else {
+        console.log('yes this the similar email users', user);
+        resolve(user);
+      }
+    });
+  });
+}
+
+function saveUser(user) {
+  var newUser = new User({
+    username: user.username,
+    password: user.password,
+    email: user.email,
+    realname: user.name
+  });
+  return new Promise(function (resolve, reject) {
+    newUser.save(function (err, usr) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(usr);
+      }
+    });
+  });
+}
+app.post('/register', function (req, response, next) {
+  checkUsername(req.body.username)
+      .then(function (resp) {
+        if (Number(resp.length) > 0) {
+          response.send({status: {
+            code: 0,
+            message: 'username already exist'
+          }});
+        } else {
+          checkEmail(req.body.email)
+              .then(function (res) {
+                console.log('yes this is the users', res);
+                if (Number(res.length) > 0) {
+                  response.send({status: {
+                    code: 0,
+                    message: 'Email already exist'
+                  }});
+                } else {
+                  saveUser(req.body)
+                      .then(function (respss) {
+                        console.log('hello new user', respss);
+                        response.send({status: {
+                          code: 0,
+                          message: 'Successfully saved user'
+                        }});
+                      });
+                }
+              });
+        }
+      });
+  /*User.find({}, function (err, user) {
     if (err) {
       throw err;
     }
@@ -41,7 +116,7 @@ app.post('/register', function (req, resp, next) {
       resp.end('okay');
     }
   })
-      // .where('email').equals(req.body.email)
+      .where('email').equals(req.body.email)
       .where('username').equals(req.body.username);
 
   User.find({ username: req.body.username }, function (err, user) {
@@ -71,7 +146,7 @@ app.post('/register', function (req, resp, next) {
         }
       });
     }
-  });
+  });*/
 });
 
 // Get all user list
