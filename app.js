@@ -31,10 +31,11 @@ db.on('error', function (req, resp) {
 });
 
 db.once('open', function () {
+  console.log(path.join(application_root, "public/dist"));
   console.log('Db connected...');
 });
 
-app.use(express.static(path.join(application_root, "public")));
+app.use(express.static(path.join(application_root, "public/dist")));
 
 function checkUsername(username) {
   return new Promise(function (resolve, reject) {
