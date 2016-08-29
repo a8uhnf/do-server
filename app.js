@@ -25,8 +25,9 @@ app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost/do_db');
 
-db.on('error', function () {
+db.on('error', function (req, resp) {
   console.log('connection error');
+  resp.send(':(');
 });
 
 db.once('open', function () {
