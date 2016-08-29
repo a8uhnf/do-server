@@ -3,9 +3,13 @@ const Backbone = require('backbone');
 module.exports = Backbone.View.extend({
   el: '.main',
   SignupFormNunj: 'signup-form-nunj.html',
+  DoctorRegisterFormNunj: 'doctor-register-form-nunj.html',
   events: {
-    'click .post-call': 'postCall',
-    'click .get-call': 'getCall'
+    'click .post-call': 'postCall'
+  },
+  initialize() {
+    this.url = 'http://127.0.0.1:3000/hello';
+    this.$el.html(global.nunjucksEnv.render(this.DoctorRegisterFormNunj));
   },
   getCall(e) {
     e.preventDefault();
@@ -22,10 +26,6 @@ module.exports = Backbone.View.extend({
         .then((res)=> {
           console.log('hello hanifa', res);
         });
-  },
-  initialize() {
-    this.url = 'http://127.0.0.1:3000/hello';
-    this.$el.html(global.nunjucksEnv.render(this.SignupFormNunj));
   },
   render() {
     // console.log('hello renderfunction');
