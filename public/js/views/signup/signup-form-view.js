@@ -1,31 +1,36 @@
 const Backbone = require('backbone');
-
+const $ = require('jquery');
+const _ = require('lodash');
 module.exports = Backbone.View.extend({
   el: '.main',
   SignupFormNunj: 'signup-form-nunj.html',
   DoctorRegisterFormNunj: 'doctor-register-form-nunj.html',
   events: {
-    'click .post-call': 'postCall'
+    'click .register-cancel': 'cancelRegisterForm',
+    'click .register-doctor': 'registerDoctor'
   },
   initialize() {
-    this.url = 'http://127.0.0.1:3000/hello';
     this.$el.html(global.nunjucksEnv.render(this.DoctorRegisterFormNunj));
   },
-  getCall(e) {
-    e.preventDefault();
-    console.log('hello post', this.url);
-    global.ajaxCall({url: this.url, request: 'GET'})
-        .then((res)=> {
-          console.log('hello hanifa', res);
+  cancelRegisterForm() {
+    global.router.navigate('#');
+  },
+  registerDoctor() {
+    const url = '/register';
+    const data = this.generateData();
+    console.log('hello url and data', url, data);
+    global.ajaxCall({url: url, data: data, request: 'POST'})
+        .then((response)=> {
+          console.log('hello response', response);
         });
   },
-  postCall(e) {
-    e.preventDefault();
-    console.log('hello get', this.url);
-    global.ajaxCall({url: this.url, request: 'POST', data: {hello: 'hello'}})
-        .then((res)=> {
-          console.log('hello hanifa', res);
-        });
+  generateData() {
+    const data = {};
+    const formData = $('#doctor-register-form').serializeArray();
+    _.each(formData, (it)=> {
+      data[it.name] = it.value;
+    });
+    return data;
   },
   render() {
     // console.log('hello renderfunction');
