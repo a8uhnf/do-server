@@ -80,6 +80,7 @@ function saveUser(user) {
   });
 }
 app.post('/register', function (req, response, next) {
+  console.log('hello data', JSON.stringify(req.body, null, 3));
   checkUsername(req.body.username)
       .then(function (resp) {
         if (Number(resp.length) > 0) {
@@ -121,8 +122,7 @@ app.get('/users', function (request, response, next) {
     users.forEach(function(user) {
       userMap[user._id] = user;
     });
-
-    response.send(userMap);
+    response.send(JSON.stringify(userMap, null, 3));
   });
 });
 app.listen(3000);
