@@ -15,7 +15,8 @@ module.exports = Backbone.View.extend({
   cancelRegisterForm() {
     global.router.navigate('#');
   },
-  registerDoctor() {
+  registerDoctor(e) {
+    e.preventDefault();
     const url = '/register';
     const data = this.generateData();
     console.log('hello url and data', url, data);

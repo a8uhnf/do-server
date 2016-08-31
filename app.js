@@ -7,13 +7,14 @@ var application_root = __dirname;
 var path = require("path");
 var mongoose = require('mongoose');
 var db = mongoose.connection;
-
+var _ = require('lodash');
+var bcrypt = require('bcrypt');
 app.use(morgan('combined'));
 
 app.use(function(req, response, next) {
   response.header("Access-Control-Allow-Origin", "*");
   response.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE, PATCH");
-  response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Data-Type, Accept");
   next();
 });
 
@@ -62,50 +63,46 @@ function checkEmail(email) {
   });
 }
 
-function saveUser(user) {
-  var newUser = new User({
-    username: user.username,
-    password: user.password,
-    email: user.email,
-    realname: user.name
-  });
-  return new Promise(function (resolve, reject) {
-    newUser.save(function (err, usr) {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(usr);
-      }
-    });
-  });
+function saveUser(userInfo) {
+
 }
 app.post('/register', function (req, response, next) {
-  console.log('hello data', JSON.stringify(req.body, null, 3));
-  checkUsername(req.body.username)
+  var reqBody;
+  _.map(req.body, function (value, key) {
+    reqBody = key;
+  });
+  reqBody = JSON.parse(reqBody);
+  checkUsername(reqBody.username)
       .then(function (resp) {
         if (Number(resp.length) > 0) {
           response.send({status: {
-            code: 0,
+            code: 2,
             message: 'username already exist'
           }});
         } else {
-          checkEmail(req.body.email)
+          checkEmail(reqBody.email)
               .then(function (res) {
                 console.log('yes this is the users', res);
                 if (Number(res.length) > 0) {
                   response.send({status: {
-                    code: 0,
+                    code: 2,
                     message: 'Email already exist'
                   }});
                 } else {
-                  saveUser(req.body)
-                      .then(function (respss) {
-                        console.log('hello new user', respss);
-                        response.send({status: {
-                          code: 0,
-                          message: 'Successfully saved user'
-                        }});
-                      });
+                  // saveUser(reqBody);
+                  var newUser = new User({
+                    username: reqBody.username,
+                    password: reqBody.password,
+                    email: reqBody.email,
+                    realname: reqBody.realname
+                  });
+                  newUser.save(function (err) {
+                    if (err) throw err;
+                    response.send({status: {
+                      code: 0,
+                      message: 'Success'
+                    }});
+                  });
                 }
               });
         }
