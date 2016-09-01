@@ -109,8 +109,17 @@ app.post('/register', function (req, response, next) {
       });
 });
 
-app.post('/login', function (req, resp, next) {
-
+app.post('/login', function (req, response) {
+  var reqBody;
+  _.map(req.body, (value, key)=> {
+    console.log('hello loging', value);
+    reqBody = key;
+    console.log('hello reqBody', reqBody);
+  });
+  response.send({status: {
+    code: 0,
+    message: 'testing'
+  }});
 });
 // Get all user list
 app.get('/users', function (request, response, next) {
