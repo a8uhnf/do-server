@@ -34,11 +34,8 @@ db.on('error', function (req, resp) {
 });
 
 db.once('open', function () {
-  console.log(path.join(application_root, "public/dist"));
   console.log('Db connected...');
 });
-
-app.use(express.static(path.join(application_root, "public/dist/user-section")));
 
 function checkUsername(username) {
   return new Promise(function (resolve, reject) {
@@ -75,6 +72,14 @@ function generateSendMessage(message, code) {
     message: message
   }};
 }
+console.log('app', path.join(application_root, "public/dist/user-section/index.html"));
+app.use(express.static(path.join(application_root, "public/dist/")));
+
+app.get('/', function (request, response) {
+  console.log('hello cookie', request);
+  response.sendfile('./public/dist/user-section/index.html', {root: __dirname})
+});
+
 app.post('/register', function (req, response, next) {
   var reqBody;
   _.map(req.body, function (value, key) {
@@ -121,13 +126,10 @@ app.post('/register', function (req, response, next) {
 app.post('/login', function (req, response) {
   var reqBody;
   _.map(req.body, (value, key)=> {
-    console.log('hello loging', value);
     reqBody = JSON.parse(key);
-    console.log('hello reqBody', reqBody.password);
   });
   User.find({username: reqBody.username}, function (err, user) {
     if (err) throw err;
-    console.log('hello user', user);
     if (user.username === reqBody.username){
       console.log('hello world', reqBody);
     }

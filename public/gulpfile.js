@@ -158,12 +158,12 @@ gulp.task('html:dev', function () {
             const filePath = file.substring(file.indexOf('/') + 1, file.lastIndexOf('/'));
             return gulp.src(file)
                 .pipe(htmlreplace({
-                    'user_app_js': './../../assets/js/user.app.js',
-                    'doctor_app_js': './../../assets/js/doctor.app.js',
+                    'user_app_js': '../assets/js/user.app.js',
+                    'doctor_app_js': '../assets/js/doctor.app.js',
                     'external_js': ext,
                     'js_ie': ie,
                     'login_check': '', // don't look for phtkn
-                    'css': './../../assets/css/style.min.css',
+                    'css': '../../assets/css/style.min.css',
                 }))
                 .pipe(gulp.dest(paths.html.destDir + '/' + filePath));
         });
