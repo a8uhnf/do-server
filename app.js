@@ -38,7 +38,7 @@ db.once('open', function () {
   console.log('Db connected...');
 });
 
-app.use(express.static(path.join(application_root, "public/dist")));
+app.use(express.static(path.join(application_root, "public/dist/user-section")));
 
 function checkUsername(username) {
   return new Promise(function (resolve, reject) {
