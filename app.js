@@ -9,6 +9,7 @@ var mongoose = require('mongoose');
 var db = mongoose.connection;
 var _ = require('lodash');
 var bcrypt = require('bcrypt');
+var cookieParser = require('cookie-parser');
 app.use(morgan('combined'));
 
 app.use(function(req, response, next) {
@@ -23,6 +24,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
 mongoose.connect('mongodb://localhost/do_db');
 
@@ -65,6 +67,13 @@ function checkEmail(email) {
 
 function saveUser(userInfo) {
 
+}
+
+function generateSendMessage(message, code) {
+  return {status: {
+    code: code,
+    message: message
+  }};
 }
 app.post('/register', function (req, response, next) {
   var reqBody;
@@ -113,13 +122,30 @@ app.post('/login', function (req, response) {
   var reqBody;
   _.map(req.body, (value, key)=> {
     console.log('hello loging', value);
-    reqBody = key;
-    console.log('hello reqBody', reqBody);
+    reqBody = JSON.parse(key);
+    console.log('hello reqBody', reqBody.password);
   });
-  response.send({status: {
-    code: 0,
-    message: 'testing'
-  }});
+  User.find({username: reqBody.username}, function (err, user) {
+    if (err) throw err;
+    console.log('hello user', user);
+    if (user.username === reqBody.username){
+      console.log('hello world', reqBody);
+    }
+    if (Number(user.length) === 0) {
+      response.send({status: {
+        code: 0,
+        message: 'username not found'
+      }});
+    } else if (reqBody.username === user[0].username && reqBody.password === user[0].password) {
+      var tkn = reqBody.username + ':' + reqBody.password;
+      // response.send(generateSendMessage('username and password matched', 0));
+      response.cookie('tkn', tkn).send(generateSendMessage('username and password matched', 0));
+      // response.cookie('hello', 'world');
+    } else {
+      response.send(generateSendMessage('username and password not matched', 0));
+    }
+  });
+  // response.send(generateSendMessage(''));
 });
 // Get all user list
 app.get('/users', function (request, response, next) {
