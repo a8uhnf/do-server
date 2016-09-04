@@ -31,12 +31,12 @@ const globalShim = require('browserify-global-shim').configure({
 const paths = {
     html: {
         files: ['index.html'],
-        indexFiles: 'index.html',
+        indexFiles: 'index/**/*.html',
         srcDir: '.',
         destDir: 'dist'
     },
     js: {
-        apps: 'js/app.js',
+        apps: 'js/apps/**/*.js',
         files: ['js/**/*.js'],
         srcDir: 'js',
         destDir: 'dist/assets/js'
@@ -146,23 +146,24 @@ gulp.task('clean', function () {
 gulp.task('html:dev', function () {
     const ext = [];
     _.forEach(paths.external_js.files, function(file)  {
-        ext.push('./assets/external_js/' + file.substring(file.lastIndexOf('/') + 1));
+        ext.push('./../../assets/external_js/' + file.substring(file.lastIndexOf('/') + 1));
     });
 
     const ie = [];
     _.forEach(paths.external_js.ie, function(file) {
-        ie.push('./assets/external_js/' + file.substring(file.lastIndexOf('/') + 1));
+        ie.push('./../../assets/external_js/' + file.substring(file.lastIndexOf('/') + 1));
     });
     glob(paths.html.indexFiles, null, function(err, files) {
         _.each(files, function(file) {
             const filePath = file.substring(file.indexOf('/') + 1, file.lastIndexOf('/'));
             return gulp.src(file)
                 .pipe(htmlreplace({
-                    'app_js': './assets/js/app.js',
+                    'user_app_js': '../assets/js/user.app.js',
+                    'doctor_app_js': '../assets/js/doctor.app.js',
                     'external_js': ext,
                     'js_ie': ie,
                     'login_check': '', // don't look for phtkn
-                    'css': './assets/css/style.min.css',
+                    'css': '../../assets/css/style.min.css',
                 }))
                 .pipe(gulp.dest(paths.html.destDir + '/' + filePath));
         });

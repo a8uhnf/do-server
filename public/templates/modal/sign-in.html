@@ -3,18 +3,18 @@
     <h4 class="modal-title">Login</h4>
 </div>
 <div class="modal-body">
-    <form>
+    <form id="sign-in-form">
         <div class="form-group">
             <label for="username" class="control-label">Username</label>
-            <input type="text" class="form-control" id="username" placeholder="Username">
+            <input type="text" class="form-control" id="username" placeholder="Username" name="username">
         </div>
         <div class="form-group">
             <label for="password" class="control-label">Password</label>
-            <input type="password" class="form-control" placeholder="Password" id="password">
+            <input type="password" class="form-control" placeholder="Password" id="password" name="password">
         </div>
     </form>
 </div>
 <div class="modal-footer">
     <a href="#/register" id="register-button">don't have account. please register</a>
-    <button type="button" class="btn">Login</button>
+    <button type="button" class="btn" id="login-button">Login</button>
 </div>
