@@ -2,11 +2,11 @@ const Backbone = require('backbone');
 const $ = require('jquery');
 const RSVP = require('rsvp');
 // VIEWS
-const HeaderMainView = require('./views/header/main-view');
+const HeaderMainView = require('./../../views/header/main-view');
 // Router
-const Router = require('./router/router');
+const Router = require('./../../router/router');
 // commonJS section
-const AjaxCall = require('./commonjs/ajaxCall');
+const AjaxCall = require('./../../commonjs/ajaxCall');
 global.router = new Router({name: 'hello world'});
 global.nunjucksEnv = new global.nunjucks.Environment(new global.nunjucks.PrecompiledLoader());
 const ajaxCall = new AjaxCall();

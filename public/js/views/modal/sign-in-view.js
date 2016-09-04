@@ -20,14 +20,18 @@ module.exports = Backbone.View.extend({
     global.ajaxCall({url: url, data: data, request: 'POST'})
         .then((resp)=> {
           console.log('hello resp', resp);
+          if (Number(resp.status.code) === 0) {
+            $('#docham-modal').modal('hide');
+            global.router.navigate('#/dc');
+          }
         });
   },
   generateData() {
     const data = {};
-    _.each($('#sign-in-form').serializeArray(), function (it) {
+    _.each($('#sign-in-form').serializeArray(), function(it) {
       data[it.name] = it.value;
     });
-    return data
+    return data;
   },
   registerButton() {
     $('#docham-modal').modal('hide');

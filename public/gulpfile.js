@@ -31,12 +31,12 @@ const globalShim = require('browserify-global-shim').configure({
 const paths = {
     html: {
         files: ['index.html'],
-        indexFiles: 'index.html',
+        indexFiles: 'index/**/*.html',
         srcDir: '.',
         destDir: 'dist'
     },
     js: {
-        apps: 'js/app.js',
+        apps: 'js/apps/**/*.js',
         files: ['js/**/*.js'],
         srcDir: 'js',
         destDir: 'dist/assets/js'
@@ -158,7 +158,8 @@ gulp.task('html:dev', function () {
             const filePath = file.substring(file.indexOf('/') + 1, file.lastIndexOf('/'));
             return gulp.src(file)
                 .pipe(htmlreplace({
-                    'app_js': './assets/js/app.js',
+                    'user_app_js': './assets/js/user.app.js',
+                    'doctor_app_js': './assets/js/doctor.app.js',
                     'external_js': ext,
                     'js_ie': ie,
                     'login_check': '', // don't look for phtkn
@@ -221,6 +222,7 @@ function bundle(b, name) {
 /* Browserifies the JS files and copies the bundle into the distribution file (dev) */
 gulp.task('js:dev', function () {
     glob(paths.js.apps, null, function (err, files) {
+        console.log('hello js', files);
         _.each(files, function (file) {
             const name = file.substring(file.lastIndexOf('/') + 1);
             const b = browserify({
