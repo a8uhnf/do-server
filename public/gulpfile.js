@@ -31,12 +31,12 @@ const globalShim = require('browserify-global-shim').configure({
 const paths = {
     html: {
         files: ['index.html'],
-        indexFiles: 'index.html',
+        indexFiles: 'index/**/*.html',
         srcDir: '.',
         destDir: 'dist'
     },
     js: {
-        apps: 'js/app.js',
+        apps: 'js/apps/**/*.js',
         files: ['js/**/*.js'],
         srcDir: 'js',
         destDir: 'dist/assets/js'
@@ -66,12 +66,13 @@ const paths = {
         destDir: 'dist/assets/templates'
     },
     scss: {
-        files: ['scss/**/*.scss'],
+        files: ['scss/style.scss'],
         srcDir: 'scss',
         destDir: 'dist/assets/css'
     },
     css_external: {
         files: [
+            'node_modules/font-awesome/css/font-awesome.min.css',
             'node_modules/bootstrap/dist/css/bootstrap.css',
             // 'node_modules/bootstrap/dist/css/bootstrap-theme.css',
         ],
@@ -82,7 +83,15 @@ const paths = {
         destDir: 'dist/assets/images'
     },
     fonts: {
-        files: [],
+        files: [
+            'fonts/**/*',
+            'node_modules/font-awesome/fonts/fontawesome-webfont.svg',
+            'node_modules/font-awesome/fonts/FontAwesome.otf',
+            'node_modules/font-awesome/fonts/fontawesome-webfont.eot',
+            'node_modules/font-awesome/fonts/fontawesome-webfont.ttf',
+            'node_modules/font-awesome/fonts/fontawesome-webfont.woff2',
+            'node_modules/font-awesome/fonts/fontawesome-webfont.woff'
+        ],
         srcDir: 'fonts',
         destDir: 'dist/assets/fonts'
     },
@@ -100,16 +109,15 @@ gulp.task('lint:css', function () {
 
 /* Compiles SCSS files into CSS files and copies them to the distribution directory */
 gulp.task('scss', function () {
+    console.log(gulp.src(paths.css_external.files));
+    const cssextStream = gulp.src(paths.css_external.files)
+        .pipe(concat('css-ext-files.css'));
     const scssStream = gulp.src(paths.scss.files)
         .pipe(sass({
             'outputStyle': 'compressed',
             'errLogToConsole': true
         }))
         .pipe(concat('scss-files.scss'));
-
-    const cssextStream = gulp.src(paths.css_external.files)
-        .pipe(concat('css-ext-files.css'));
-
     return merge(scssStream, cssextStream)
         .pipe(concat('style.min.css'))
         .pipe(cleanCSS({compatibility: 'ie8'}))
@@ -130,7 +138,6 @@ gulp.task('css:prod', function (done) {
 
 /* Copies files to the distribution directory */
 ['images', 'fonts'].forEach(function (fileType) {
-    console.log('hello world');
     gulp.task(fileType, function () {
         return gulp.src(paths[fileType].files)
             .pipe(gulp.dest(paths[fileType].destDir));
@@ -146,23 +153,24 @@ gulp.task('clean', function () {
 gulp.task('html:dev', function () {
     const ext = [];
     _.forEach(paths.external_js.files, function(file)  {
-        ext.push('./assets/external_js/' + file.substring(file.lastIndexOf('/') + 1));
+        ext.push('./../../assets/external_js/' + file.substring(file.lastIndexOf('/') + 1));
     });
 
     const ie = [];
     _.forEach(paths.external_js.ie, function(file) {
-        ie.push('./assets/external_js/' + file.substring(file.lastIndexOf('/') + 1));
+        ie.push('./../../assets/external_js/' + file.substring(file.lastIndexOf('/') + 1));
     });
     glob(paths.html.indexFiles, null, function(err, files) {
         _.each(files, function(file) {
             const filePath = file.substring(file.indexOf('/') + 1, file.lastIndexOf('/'));
             return gulp.src(file)
                 .pipe(htmlreplace({
-                    'app_js': './assets/js/app.js',
+                    'user_app_js': '../assets/js/user.app.js',
+                    'doctor_app_js': '../assets/js/doctor.app.js',
                     'external_js': ext,
                     'js_ie': ie,
                     'login_check': '', // don't look for phtkn
-                    'css': './assets/css/style.min.css',
+                    'css': '../../assets/css/style.min.css',
                 }))
                 .pipe(gulp.dest(paths.html.destDir + '/' + filePath));
         });
@@ -279,23 +287,6 @@ gulp.task('copy:js_ext', function () {
     // .pipe(gulpRev())
         .pipe(gulp.dest(paths.external_js.destDir));
 });
-
-gulp.task('copy:schema', function (cb) {
-    exec("bash -c 'dir=$PWD;pushd $GOPATH/src/github.com/api;echo $dir;mkdir -p $dir/js/schema;find . -name '*.schema.json' | cpio -pdm $dir/js/schema;'", function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
-});
-
-gulp.task('copy:data', function (cb) {
-    exec("bash -c 'dir=$PWD;rm -rf $dir/js/data;pushd $GOPATH/src/github.com/data/files;echo $dir;mkdir -p $dir/js/data;cp *.json $dir/js/data;'", function (err, stdout, stderr) {
-        console.log(stdout);
-        console.log(stderr);
-        cb(err);
-    });
-});
-
 /* Copies files to the distribution directory */
 ['images', 'fonts'].forEach(function (fileType) {
     gulp.task(fileType, function () {
