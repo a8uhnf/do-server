@@ -1,16 +1,17 @@
 var express = require('express');
 var app = express();
 var morgan = require('morgan');
+var cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-var User = require('./db/User');
-var application_root = __dirname;
 var path = require("path");
+var application_root = __dirname;
+var User = require('./db/User');
 var mongoose = require('mongoose');
 var db = mongoose.connection;
 var _ = require('lodash');
 var bcrypt = require('bcrypt');
-var cookieParser = require('cookie-parser');
-app.use(morgan('combined'));
+var route = require('./routes');
+app.use(morgan('dev'));
 
 app.use(function(req, response, next) {
   response.header("Access-Control-Allow-Origin", "*");
@@ -72,12 +73,18 @@ function generateSendMessage(message, code) {
     message: message
   }};
 }
-console.log('app', path.join(application_root, "public/dist/user-section/index.html"));
 app.use(express.static(path.join(application_root, "public/dist/")));
+console.log(__dirname);
 
-app.get('/', function (request, response) {
-  console.log('hello cookie', request);
-  response.sendfile('./public/dist/user-section/index.html', {root: __dirname})
+app.get('/', route.index);
+app.get('/dc', function (request, response) {
+  response.clearCookie('hello_world');
+  response.clearCookie('tkn');
+  if (typeof request.cookies === 'undefined') {
+    response.sendfile('./public/dist/user-section/index.html', {root: __dirname});
+  } else {
+    response.sendfile('./public/dist/doctor-section/index.html', {root: __dirname});
+  }
 });
 
 app.post('/register', function (req, response, next) {
@@ -140,7 +147,6 @@ app.post('/login', function (req, response) {
       }});
     } else if (reqBody.username === user[0].username && reqBody.password === user[0].password) {
       var tkn = reqBody.username + ':' + reqBody.password;
-      // response.send(generateSendMessage('username and password matched', 0));
       response.cookie('tkn', tkn).send(generateSendMessage('username and password matched', 0));
       // response.cookie('hello', 'world');
     } else {

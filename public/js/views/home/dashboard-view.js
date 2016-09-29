@@ -29,5 +29,9 @@ module.exports = Backbone.View.extend({
         .then((res)=> {
           console.log('google api response', res);
         });
+  },
+  close() {
+    this.unbind();
+    this.undelegateEvents();
   }
 });

@@ -1,0 +1,67 @@
+<form style="margin: 20px">
+    <fieldset class="form-group">
+        <label for="doctor-name">Name</label>
+        <input type="email" class="form-control" id="doctor-name" placeholder="Enter Name">
+        <small class="text-muted">We'll never share your email with anyone else.</small>
+    </fieldset>
+    <fieldset class="form-group">
+        <label for="designation-select">Designation</label>
+        <select class="form-control" id="designation-select">
+            <option value="General practitioner">General practitioner</option>
+            <option value="CA">CA</option>
+            <option value="IMO">IMO</option>
+            <option value="Register">Register</option>
+            <option value="Assistant professor">Assistant professor</option>
+            <option value="Associate professor">Associate professor</option>
+            <option value="Professor">Professor</option>
+        </select>
+    </fieldset>
+    <div class="specific-chamber">
+        <fieldset class="form-group">
+            <label>Visiting Days</label><br>
+            <label class="radio-inline">
+                <input type="radio" value="sun" name="optradio">Sunday
+            </label>
+            <label class="radio-inline">
+                <input type="radio" value="mon" name="optradio">Monday
+            </label>
+            <label class="radio-inline">
+                <input type="radio" value="tue" name="optradio">Tuesday
+            </label>
+            <label class="radio-inline">
+                <input type="radio" value="wed" name="optradio">Wednesday
+            </label>
+            <label class="radio-inline">
+                <input type="radio" value="thu" name="optradio">Thursday
+            </label>
+            <label class="radio-inline">
+                <input type="radio" value="fri" name="optradio">Friday
+            </label>
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="honorarium">Honorarium</label>
+            <input type="text" class="form-control" id="honorarium" placeholder="Honorarium">
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="address">Address</label>
+            <input type="text" class="form-control" id="address" placeholder="Address">
+        </fieldset>
+        <fieldset class="form-group">
+            <label for="chamber-contact-number">Chamber Contact Number</label>
+            <input type="text" class="form-control" id="chamber-contact-number" placeholder="Chamber contact number">
+        </fieldset>
+    </div>
+    <!--<fieldset class="form-group">
+        <label for="exampleTextarea">Example textarea</label>
+        <textarea class="form-control" id="exampleTextarea" rows="3"></textarea>
+    </fieldset>-->
+    <!--<fieldset class="form-group">
+        <label for="exampleInputFile">File input</label>
+        <input type="file" class="form-control-file" id="exampleInputFile">
+        <small class="text-muted">This is some placeholder block-level help text for the above input. It's a bit lighter and easily wraps to a new line.</small>
+    </fieldset>-->
+    <fieldset class="form-group">
+        <button type="submit" id="add-chamber-info" class="btn btn-info pull-left add-chamber">Add More Chamber Info</button>
+    </fieldset>
+</form>
+<button type="submit" class="btn btn-primary pull-right">Submit</button>

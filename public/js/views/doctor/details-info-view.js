@@ -4,7 +4,7 @@ const _ = require('lodash');
 module.exports = Backbone.View.extend({
   el: '.main',
   SignupFormNunj: 'signup-form-nunj.html',
-  DoctorRegisterFormNunj: 'doctor-register-form-nunj.html',
+  DoctorRegisterFormNunj: 'doctor-infos-form-nunj.html',
   events: {
     'click .register-cancel': 'cancelRegisterForm',
     'click .register-doctor': 'registerDoctor'

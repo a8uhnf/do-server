@@ -22,7 +22,8 @@ module.exports = Backbone.View.extend({
           console.log('hello resp', resp);
           if (Number(resp.status.code) === 0) {
             $('#docham-modal').modal('hide');
-            global.router.navigate('#/dc');
+            global.router.navigate('/');
+            location.reload();
           }
         });
   },
@@ -35,5 +36,9 @@ module.exports = Backbone.View.extend({
   },
   registerButton() {
     $('#docham-modal').modal('hide');
+  },
+  close() {
+    this.unbind();
+    this.undelegateEvents();
   }
 });

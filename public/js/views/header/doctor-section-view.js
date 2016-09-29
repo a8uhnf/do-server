@@ -4,7 +4,7 @@ const SignInViewModal = require('../modal/sign-in-view');
 
 module.exports = Backbone.View.extend({
   el: '.navbar',
-  DashboardNunj: 'header-nunj.html',
+  DashboardNunj: 'doctor-section-header-nunj.html',
   events: {
     'click #login-register': 'logInRegister'
   },

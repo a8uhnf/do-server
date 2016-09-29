@@ -4,7 +4,7 @@ const RSVP = require('rsvp');
 // VIEWS
 const HeaderMainView = require('./../../views/header/main-view');
 // Router
-const Router = require('./../../router/router');
+const Router = require('./../../router/doctor.router');
 // commonJS section
 const AjaxCall = require('./../../commonjs/ajaxCall');
 global.router = new Router({name: 'hello world'});
@@ -14,7 +14,7 @@ global.headerMainView = new HeaderMainView();
 global.headerView = ()=> {
   global.headerMainView.render();
 };
-
+console.log('hello world doctor.app.js');
 global.locationAjaxCall = (url)=> {
   return new RSVP.Promise((resolve, reject)=> {
     $.ajax({
